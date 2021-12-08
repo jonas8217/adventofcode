@@ -14,7 +14,7 @@ for pair in inp:
 print(onefourseveneight)
 
 
-#  0aaa 
+#  0aaa
 #1b    2c
 # b     c
 # b     c
@@ -32,14 +32,15 @@ def disp(smap):
     print(f'  {smap[6]}  ')
     print('')
 
+
 possible = 'abcdefg'
 
 sum = 0
 
 for pair in inp:
     inputnumbers,display = pair.split('|')
-    inputnumbers = list(map(sorted,inputnumbers.strip().split(' ')))
-    display = list(map(sorted,display.strip().split(' ')))
+    inputnumbers = [''.join(w) for w in list(map(sorted,inputnumbers.strip().split(' ')))]
+    display = [''.join(w) for w in list(map(sorted,display.strip().split(' ')))]
 
     segmap = ['' for _ in range(7)]
     nums = ['' for _ in range(10)]
@@ -47,24 +48,24 @@ for pair in inp:
     sixes = []
     for n in inputnumbers:
         length = len(n)
-        if length == 2: # one
+        if length == 2:  # one
             nums[1] = n
-        elif length == 3: # seven
+        elif length == 3:  # seven
             nums[7] = n
-        elif length == 4: # four
+        elif length == 4:  # four
             nums[4] = n
         elif length == 5:
             fives.append(n)
         elif length == 6:
             sixes.append(n)
-        elif length == 7: # eight
+        elif length == 7:  # eight
             nums[8] = n
 
     for char in nums[7]:
         if char not in nums[1]:
             segmap[0] = char
 
-    #   aaa 
+    #   aaa
     # x     x
     # x     x
     # X     x
@@ -82,7 +83,7 @@ for pair in inp:
         elif char not in sixes[2]:
             outliers.append(char)
 
-    
+
     # 0 6 9
     for char in outliers:
         if char in nums[1]:
@@ -91,8 +92,8 @@ for pair in inp:
             segmap[3] = char
         else:
             segmap[4] = char
-    
-    #   aaa 
+
+    #   aaa
     # x     c
     # x     c
     # X     c
@@ -106,8 +107,8 @@ for pair in inp:
         segmap[5] = nums[1][1]
     else:
         segmap[5] = nums[1][0]
-    
-    #   aaa 
+
+    #   aaa
     # x     c
     # x     c
     # X     c
@@ -122,7 +123,7 @@ for pair in inp:
         if char not in segmap:
             segmap[1] = char
 
-    #   aaa 
+    #   aaa
     # b     c
     # b     c
     # b     c
@@ -131,7 +132,7 @@ for pair in inp:
     # e     f
     # e     f
     #   xxx
-    
+
     for char in possible:
         if char not in segmap:
             segmap[6] = char
@@ -155,9 +156,12 @@ for pair in inp:
 
 
     displaynumber = 0
+    print(display)
+    print(nums)
     for i,d in enumerate(display[::-1]):
-        displaynumber = nums.index(d) * 10**i
-    
+        displaynumber += nums.index(d) * 10**i
+
     sum += displaynumber
+
 
 print(sum)
