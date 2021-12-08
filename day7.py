@@ -18,16 +18,19 @@ fuelspent = 0
 
 
 while rightIndex != leftIndex:
-    if crabsubs[leftIndex] > crabsubs[rightIndex]:
+    if fueltospendleft > fueltospendright:
+        fuelspent += fueltospendright
         crabsubs[rightIndex-1] += crabsubs[rightIndex]
-        fuelspent += crabsubs[rightIndex]
         crabsubs[rightIndex] = 0
         rightIndex -= 1
+        fueltospendright += crabsubs[rightIndex]
     else:
-        fuelspent += crabsubs[leftIndex]
+        fuelspent += fueltospendleft
         crabsubs[leftIndex+1] += crabsubs[leftIndex]
         crabsubs[leftIndex] = 0
         leftIndex += 1
+        fueltospendleft += crabsubs[leftIndex]
+
 
 
 print(fuelspent)
