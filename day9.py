@@ -2,17 +2,13 @@ from getdayarr import getday
 
 inp = getday(9)
 
-inp = """2199943210
-3987894921
-9856789892
-8767896789
-9899965678""".split('\n')
 
-heightmap = [[int(n) for n in row]+[9] for row in inp]
+
+heightmap = [[int(n) for n in row.strip()]+[9] for row in inp]
 heightmap += [(len(inp[0])+2)*[9]]  # padding to circumvent negatives of wrapping in python lists
 
 
-xmax,ymax = len(inp[0]),len(inp)
+xmax,ymax = len(heightmap[0])-1,len(heightmap)-1  # -1 from padding
 
 
 
@@ -42,49 +38,55 @@ for y in range(ymax):
 
 
 def basinSearch(x,y):
-    BreadthWidthToggle = 0
-    basin = []
-    new = [[x,y]]
-    tempnew = []
-    while len(new) != 0:
 
-        print(new)
+    okX = lambda i: (heightmap[coord[1]][i] not in basin and heightmap[coord[1]][i] != 9)
+    okY = lambda i: (heightmap[i][coord[0]] not in basin and heightmap[i][coord[0]] != 9)
+
+    basin = {(x,y)}
+    new = {(x,y)}
+    lastSize = 0
+    while len(basin) - lastSize != 0:
+        lastSize = len(basin)
+        tempnew = set()
         for coord in new:
             for i in range(coord[0]+1,xmax):
-                if heightmap[coord[1]][i] not in basin and heightmap[coord[1]][i] != 9:
-                    tempnew.append([i,coord[1]])
+                if okX(i):
+                    tempnew.add((i,coord[1]))
                 else:
                     break
-            for i in range(0,coord[0]-1)[::-1]:
-                if heightmap[coord[1]][i] not in basin and heightmap[coord[1]][i] != 9:
-                    tempnew.append([i,coord[1]])
+            for i in range(0,coord[0])[::-1]:
+                if okX(i):
+                    tempnew.add((i,coord[1]))
                 else:
                     break
-        new = tempnew
-        tempnew = []
-        print(new)
+        for n in tempnew:
+            new.add(n)
         for n in new:
-            basin.append(n)
-
+            basin.add(n)
+        tempnew = set()
         for coord in new:
             for i in range(coord[1]+1,ymax):
-                if heightmap[i][coord[0]] not in basin and heightmap[i][coord[0]] != 9:
-                    tempnew.append([coord[0],1])
+                if okY(i):
+                    tempnew.add((coord[0],i))
                 else:
                     break
-            for i in range(0,coord[0]-1)[::-1]:
-                if heightmap[i][coord[0]] not in basin and heightmap[i][coord[0]] != 9:
-                    tempnew.append([coord[0],1])
+            for i in range(0,coord[1])[::-1]:
+                if okY(i):
+                    tempnew.add((coord[0],i))
                 else:
                     break
         new = tempnew
-        tempnew = []
-        print(new)
-        break
-
 
         for n in new:
-            basin.append(n)
+            basin.add(n)
     return basin
 
-print(basinSearch(*lowest[0]))
+
+basins = []
+
+for point in lowest:
+    basins.append(basinSearch(*point))
+
+basins = sorted(basins,key=lambda x:len(x),reverse=True)
+
+print(len(basins[0])*len(basins[1])*len(basins[2]))
